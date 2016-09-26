@@ -12,14 +12,13 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="elements/na-elements.html">
 
-<dom-module id="my-app">
+<!--- ->
+<link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<!---->
+
+<dom-module id="x-app">
   <template>
     <style include="note-app-shared-styles"></style>
-
-    <na-toolbar
-        signed-in="[[signedIn]]"
-        on-sign-out="signOut">
-    </na-toolbar>
 
     <na-login
         on-sign-in="signIn"
@@ -49,6 +48,20 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
         persisted-data="{{persistedData}}">
     </app-indexeddb-mirror>
 
+    <firebase-document
+        id="document"
+        app-name="notes"
+        path="[[editableNoteId]]"
+        data="{{editableNote}}">
+    </firebase-document>
+		
+		<!--- ->
+
+    <na-toolbar
+        signed-in="[[signedIn]]"
+        on-sign-out="signOut">
+    </na-toolbar>
+    
     <div class="notes">
       <template is="dom-repeat" items="[[persistedData]]" as="note">
         <na-note
@@ -59,21 +72,24 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
         </na-note>
       </template>
     </div>
-
+		
     <paper-fab icon="add" disabled="[[!online]]" on-tap="create"></paper-fab>
-
-    <firebase-document
-        id="document"
-        app-name="notes"
-        path="[[editableNoteId]]"
-        data="{{editableNote}}">
-    </firebase-document>
 
     <na-editor
         id="editor"
         note="{{editableNote}}"
         on-close="commitChange">
     </na-editor>
+		
+		<!---->
+		
+		<!-- Edit - ->
+		<iron-signals on-iron-signal-update="show"
+									on-iron-signal-save="show"
+									on-iron-signal-delete="show"
+									>
+		</iron-signals>
+		<!-- endEdit -->
 
   </template>
   <script>
@@ -81,11 +97,25 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
       'use strict';
 
       Polymer({
-        is: 'my-app',
+        is: 'x-app',
 
         behaviors: [
           Polymer.NoteAppBehavior
         ],
+				
+				// Edit
+				/** /
+        listeners: {
+          'iron-signal-update' : 'show', //'_expensesUpdated',
+          'iron-signal-save'   : 'show', //'_saveExpense',
+          'iron-signal-delete' : 'show', //'_deleteExpense'
+        },
+				/**/
+				show: function(e) {
+					console.log('A');
+					//console.log('e', e);
+				},
+				// endEdit
 
         get isEditable() {
           return this.online;
@@ -96,12 +126,13 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
         },
 
         toEditableId: function(noteId) {
-          return this.notesPath + '/' + noteId;
+				  return this.notesPath + '/' + noteId;
         },
 
         signIn: function() {
           this.$.auth.signInWithPopup();
         }
+				
       });
     })();
   </script>

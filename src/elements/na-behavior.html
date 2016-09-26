@@ -35,7 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       edit: function(event) {
         if (this.isEditable) {
           var noteElement = Polymer.dom(event).localTarget;
-          this.editableNoteId = this.toEditableId(noteElement.id);
+					this.editableNoteId = this.toEditableId(noteElement.id);
 
           this.$.document.transactionsComplete.then(function() {
             this.$.editor.open(noteElement);
@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         switch (event.detail) {
           case 'save':
-            changeCommits = this.save();
+						changeCommits = this.save();
             break;
           case 'delete':
             changeCommits = this.delete();
@@ -73,14 +73,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       save: function() {
+				console.log('isNew', this.$.document.isNew);
         if (this.$.document.isNew &&
             (this.editableNote.title ||
              this.editableNote.body)) {
-          return this.$.document.save(this.notesPath).then(function() {
+					console.log('new', this.$.document.data);
+					console.log('editableNote', this.editableNote);
+					console.log('editableNoteId', this.editableNoteId);
+					console.log('notesPath', this.notesPath);
+					return this.$.document.save(this.notesPath).then(function() {
             this.$.document.reset();
           }.bind(this));
         }
-
+        console.log('save', this.$.document.data);
+				console.log('editableNote', this.editableNote);
+				console.log('editableNoteId', this.editableNoteId);
+        console.log('notesPath', this.notesPath);
         return Promise.resolve();
       },
 

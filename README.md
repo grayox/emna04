@@ -1,3 +1,6 @@
+Expense Manager - Note App (EMNA)
+v4: N(V)+E. Copies v2 N(V). Adds edits E.
+
 # Polymer App Toolbox - Drawer Template
 
 This template is a starting point for building apps using a drawer-based
